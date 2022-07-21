@@ -129,5 +129,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-.currentBackup/
-.scrap/
+currentBackup/
+scrap/
