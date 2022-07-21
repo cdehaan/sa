@@ -1,0 +1,22 @@
+{
+    "name": "simplyanything",
+    "version": "1.0.0",
+    "license": "ISC",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "description": "Actions party game",
+    "dependencies": {
+        "dotenv": "^16.0.1",
+        "express": "^4.17.1",
+        "mysql2": "^2.3.3",
+        "socket.io": "^4.4.1"
+    },
+    "keywords": [],
+    "author": "Chris DeHaan",
+    "devDependencies": {
+        "jest": "^28.1.0"
+    }
+}
