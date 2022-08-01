@@ -477,13 +477,9 @@ function PlacelobbyScreenBadgeCss(playerIndex, badge) {
     badge.style.top  = `calc(${badgeTruevhTop} * var(--truevh))`;
     badge.style.left = (columnWidth*0.1 + (currentColumn * columnWidth)) + "vw";
 
-    //badge.style.fontSize     = (rowHeight/2) + "vh";
     badge.style.borderRadius = (rowHeight/4) + "vh";
     badge.style.opacity      = "1";
-
-    const playerBadgeName = badge.querySelector(".playerBadgeName");
     badge.style.fontSize = "";
-    //setTimeout(() => { ResizeBadgePlayername(badge); }, 1500);
 }
 
 function ResizeBadgePlayername(badge) {
@@ -624,7 +620,6 @@ function PopulateActionScreen(normalSpeed) {
             playerBadgeName.innerHTML = EmojiHash(currentActor.playerName + currentActor.playerKey) + " " + currentActor.playerName;
         } else {
             playerBadgeName.innerHTML = "🚫 No Actor";
-            //setTimeout(() => { location.reload(); }, 10000);
         }
 
         const actionScreenHeaderTopLine = document.createElement("div");
