@@ -950,17 +950,17 @@ function PopulateQuestionCardEmoji() {
     document.querySelectorAll(".questionCardEmoji").forEach(questionCardEmoji => { questionCardEmoji.innerHTML = ""; });
 
     playerList.forEach((player, emojiIndex) => {
-        /* Don't add an emoji for the actor */
+        // Don't add an emoji for the actor
         if (player.playerIndex == roomData.roomCurrentPlayer) { return; }
 
-        /* Find the question card this player choose */
+        // Find the question card this player choose
         const currentQuestionCard = document.querySelector(`.questionCard[questionindex='${player.playerChoice}']`);
         if (!currentQuestionCard) { return; }
 
-        /* Find the card footer (which holds emoji) */
+        // Find the card footer (which holds emoji)
         const currentQuestionCardEmoji = currentQuestionCard.querySelector(".questionCardEmoji");
 
-        /* Add the player's emoji to the footer, then check for overflow */
+        // Add the player's emoji to the footer, then check for overflow
         const emojiStaggerTime = Math.min(100, 1000/playerList.length);
         setTimeout( function() {
             currentQuestionCardEmoji.innerHTML += EmojiHash(player.playerName + player.playerKey);
