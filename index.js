@@ -85,8 +85,8 @@ async function GenerateGame(socket, requestData){
 
 
     // Create the room variable, to be returned
-
     returnData.roomData = {roomCode: newRoomCode, roomState: 0, playerIndex: 1};
+
 
     // Pull the player list (should be just 1 player at this point), hide the secret for consistency
     const playerDataResult = await PullPlayerData(newRoomCode);
