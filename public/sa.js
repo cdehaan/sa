@@ -273,38 +273,6 @@ function GenerateLoadingScreen() {
         document.body.appendChild(joinGameCircleDiv);
     }, 1200*sessionData.animationSpeed);
 
-    // Rejoin, when possible, happens automatically on load now
-    /*
-    if(myPlayerData.playerKey) {
-        setTimeout(function(){
-            const rejoinGameDiv = document.createElement("div");
-            rejoinGameDiv.id = "rejoinGameDiv";
-            rejoinGameDiv.classList.add("glassCard");
-            rejoinGameDiv.classList.add("firstScreenGlass");
-            rejoinGameDiv.classList.add("rejoinGameDiv");
-            rejoinGameDiv.classList.add("rejoinGameExpandAnimation");
-            document.body.appendChild(rejoinGameDiv);
-
-                const rejoinGameTextDiv = document.createElement("div");
-                rejoinGameTextDiv.classList.add("loadingScreenText");
-                rejoinGameTextDiv.innerHTML = "Rejoin Game";
-                rejoinGameDiv.appendChild(rejoinGameTextDiv);
-                setTimeout(() => { ShrinkText(rejoinGameTextDiv); }, 10);
-
-                const rejoinGameButton = document.createElement("button");
-                rejoinGameButton.classList.add("loadingScreenButton");
-                rejoinGameButton.textContent = "Rejoin!";
-                rejoinGameButton.onclick = function() { RejoinGame(); };
-                rejoinGameDiv.appendChild(rejoinGameButton);
-
-            const rejoinGameCircleDiv = document.createElement("div");
-            rejoinGameCircleDiv.id = "rejoinGameCircleDiv";
-            rejoinGameCircleDiv.classList.add("greenCircle");
-            rejoinGameCircleDiv.classList.add("circleExpandAnimation");
-            document.body.appendChild(rejoinGameCircleDiv);
-        }, 1400*sessionData.animationSpeed);
-    }
-    */
     setTimeout(function() {sessionData.animating = false;}, 1500);
 }
 
