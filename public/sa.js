@@ -1536,7 +1536,11 @@ function getCookie(cname) {
 // Calculate TrueVh now, then ignore any resize for the next 100ms.
 // After 100ms calculate TrueVh again (Debouncing) and start to listen for resize again.
 function CalculateTrueVh() {
-    const truevh = window.innerHeight / 100; document.documentElement.style.setProperty('--truevh', `${truevh}px`);
+    const existingTrueVh = parseFloat(document.documentElement.style.getPropertyValue("--truevh")) || 0;
+    const currentTruevh = window.innerHeight / 100;
+    const truevh = Math.max(existingTrueVh, currentTruevh);
+    document.documentElement.style.setProperty('--truevh', `${truevh}px`);
+
     window.onresize = null;
     setTimeout(() => {
         window.onresize = CalculateTrueVh;
