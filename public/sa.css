@@ -12,19 +12,26 @@ body {
     border: 0;
     margin: 0;
     width: 100vw;
-    overflow: hidden;
-    background-image: linear-gradient(123deg, rgba(32, 35, 32, 1) 0%, rgba(124, 48, 63, 1) 100%);
-    background-attachment: fixed;
+    height: 100vh;
+    background-color: #333;
     font-family: sans-serif;
     font-size: calc(2.5 * var(--truevh));
+    display: flex;
+    justify-content: center;
+    background: url(background.png);
 }
 
 .MainWrapper {
-    max-width: 80vh;
+    width: calc(min(70vh, 100vw));
+    width: 60vh;
+    position: relative;
+    overflow: hidden;
+    background-image: linear-gradient(123deg, rgba(32, 35, 32, 1) 0%, rgba(124, 48, 63, 1) 100%);
+    background-attachment: fixed;
 }
 
 .confettiCanvas {
-    position: fixed;
+    position: absolute;
     height: 5px;
     top:0;
     left:0;
@@ -36,7 +43,7 @@ body {
 }
 
 .offlineCover {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -97,7 +104,7 @@ body {
 
 .glassCard {
     display: flex;
-    border-radius: 5vmax;
+    border-radius: 8vh;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(127, 127, 127, 0.3) 50%, rgba(63, 63, 63, 0.3) 100%);
     backdrop-filter: blur(10px);
     border: 2px solid rgba(127, 127, 127, 0.3);
@@ -119,7 +126,7 @@ div.headerDiv {
     display: flex;
     justify-content:center;
     align-items:center;
-    position: fixed;
+    position: absolute;
     overflow: hidden;
 
     background: #d52e3f;
@@ -162,7 +169,7 @@ div.footerDiv {
     display: flex;
     justify-content:center;
     align-items:center;
-    position: fixed;
+    position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
@@ -206,12 +213,12 @@ div.qrCodeFooterDiv {
 
 .qrCode {
     transition: all 0.5s;
-    height: calc(min(75 * var(--truevh), 75vw));
-    width: calc(min(75 * var(--truevh), 75vw));
-    padding: 5vw;
+    height: calc(min(75 * var(--truevh), 75%));
+    width: calc(min(75 * var(--truevh), 75%));
+    padding: 5%;
     background: #fff;
-    border: 1vw solid #000;
-    border-radius: 5vw;
+    border: 1% solid #000;
+    border-radius: 5%;
 }
 
 .qrCodeShrink {
@@ -250,7 +257,7 @@ div.qrClose {
 }
 
 div.qrFooter {
-    width: 90vw;
+    width: 90%;
     overflow: hidden;
     text-align: center;
 }
@@ -262,7 +269,7 @@ div.loadingScreenText {
     color: rgba(255,255,255,0.75);
     font-size: calc(5 * var(--truevh));
     font-weight: bold;
-    width: 80vw;
+    width: 80%;
 }
 
 input.loadingScreenInput {
@@ -295,8 +302,8 @@ div.firstScreenGlass {
     justify-items: center;
     grid-template-columns: auto;
     grid-template-rows: calc(7.5 * var(--truevh)) calc(7.5 * var(--truevh)) calc(7.5 * var(--truevh));
-    left: 10vw;
-    right:10vw;
+    left: 10%;
+    right:10%;
     z-index: 10;
     animation-duration: 0.5s;
     transition: transform 0.5s;
@@ -353,10 +360,10 @@ div.rejoinGameDiv {
 }
 
 div.orangeCircle {
-    position: fixed;
+    position: absolute;
     top:calc(11 * var(--truevh));
     height:20vmin;
-    left:30vw;
+    left:30%;
     width: 20vmin;
     background: linear-gradient(135deg, rgba(220, 100, 42, 1) 0%, rgba(215, 75, 100, 1) 100%);
     border-radius: 100%;
@@ -364,10 +371,10 @@ div.orangeCircle {
 }
 
 div.blueCircle {
-    position: fixed;
+    position: absolute;
     top:calc(50 * var(--truevh));
     height:30vmin;
-    right:2vw;
+    right:2%;
     width: 30vmin;
     background-color: #537895;
     background-image: linear-gradient(315deg, #537895 0%, #09203f 74%);
@@ -376,10 +383,10 @@ div.blueCircle {
 }
 
 div.greenCircle {
-    position: fixed;
+    position: absolute;
     bottom:calc(1 * var(--truevh));
     height:20vmin;
-    right:50vw;
+    right:50%;
     width: 20vmin;
     background-color: #63d471;
     background-image: linear-gradient(315deg, #63d471 0%, #233329 74%);
@@ -400,39 +407,39 @@ div.greenCircle {
 }
 
 @keyframes headerExpand {
-    0%   {left: 50vw; width:0;     top:calc(40 * var(--truevh)); background: rgba(0,0,0,0);   }
-    50%  {left: 0;    width:100vw; top:calc(40 * var(--truevh)); background: rgba(0,0,0,1);   }
-    100% {left: 0;    width:100vw; top:0;                        background: rgba(0,0,0,0.25); }
+    0%   {left: 50%; width:0;    top:calc(40 * var(--truevh)); background: rgba(0,0,0,0);   }
+    50%  {left: 0;   width:100%; top:calc(40 * var(--truevh)); background: rgba(0,0,0,1);   }
+    100% {left: 0;   width:100%; top:0;                        background: rgba(0,0,0,0.25); }
 }
 
 @keyframes newGameExpand {
-    0%   { left: 50vw; right:50vw;  top:calc(30 * var(--truevh)); height:0;    transform: rotate(   0deg); padding: 0; }
+    0%   { left: 50%; right:50%;  top:calc(30 * var(--truevh)); height:0;    transform: rotate(   0deg); padding: 0; }
     100% { }
 }
 
 @keyframes newGameShrink {
     0%   { }
-    100% { left: 50vw; right:50vw;  top:calc(20 * var(--truevh)); height:0;    transform: rotate(-360deg); padding: 0; }
+    100% { left: 50%; right:50%;  top:calc(20 * var(--truevh)); height:0;    transform: rotate(-360deg); padding: 0; }
 }
 
 @keyframes joinGameExpand {
-    0%   { left: 50vw; right:50vw;  top:calc(55 * var(--truevh)); height:0;    transform: rotate(   0deg); padding: 0; }
+    0%   { left: 50%; right:50%;  top:calc(55 * var(--truevh)); height:0;    transform: rotate(   0deg); padding: 0; }
     100% { }
 }
 
 @keyframes joinGameShrink {
     0%   { }
-    100% { left: 50vw; right:50vw;  top:calc(45 * var(--truevh)); height:0;    transform: rotate( 360deg); padding: 0; }
+    100% { left: 50%; right:50%;  top:calc(45 * var(--truevh)); height:0;    transform: rotate( 360deg); padding: 0; }
 }
 
 @keyframes rejoinGameExpand {
-    0%   { left: 50vw; right:50vw;  top:calc(85 * var(--truevh)); height:0;    transform: rotate(   0deg); padding: 0; }
+    0%   { left: 50%; right:50%;  top:calc(85 * var(--truevh)); height:0;    transform: rotate(   0deg); padding: 0; }
     100% { }
 }
 
 @keyframes rejoinGameShrink {
     0%   { }
-    100% { left: 50vw; right:50vw;  top:calc(75 * var(--truevh)); height:0;    transform: rotate(   0deg); padding: 0; }
+    100% { left: 50%; right:50%;  top:calc(75 * var(--truevh)); height:0;    transform: rotate(   0deg); padding: 0; }
 }
 
 @keyframes circleExpand {
@@ -453,7 +460,7 @@ div.greenCircle {
 
 /*#region Waiting screen */
 div.lobbyScreenWrapper {
-    position: fixed;
+    position: absolute;
     display: flex;
     flex-direction: column;
     top:calc(var(--header-height) * var(--truevh));
@@ -483,7 +490,7 @@ div.lobbyScreenHeaderShrunk {
     top:calc(5 * var(--truevh));
     height: 0;
     width: 0;
-    left:50vw;
+    left:50%;
 }
 
 div.badgeWrapper {
@@ -510,12 +517,12 @@ div.lobbyScreenFooterShrunk {
     bottom: calc(15 * var(--truevh));
     height: 0;
     width: 0;
-    left: 50vw;
+    left: 50%;
 }
 
 button.lobbyScreenStartButton {    
     height: calc(5 * var(--truevh));
-    width: 50vw;
+    width: 50%;
     color: #fff;
     font-size: calc(3 * var(--truevh));
     background-color: rgba(255,255,255,0.3);
@@ -528,7 +535,7 @@ button.lobbyScreenStartButton {
 
 button.lobbyScreenLeaveButton {    
     height: calc(3 * var(--truevh));
-    width: 50vw;
+    width: 50%;
     color: #fff;
     font-size: calc(2 * var(--truevh));
     background-color: rgba(0,0,0,0.3);
@@ -566,7 +573,7 @@ div.lobbyScreenStartButtonGlow {
 }
 
 div.lobbyScreenStartButtonGlowExpand {
-    width: 50vw;
+    width: 50%;
     box-shadow: 0px 0px calc(1 * var(--truevh)) 0px #00FF00;
     border: 1px solid rgba(0,255,0,1);
 }
@@ -574,7 +581,7 @@ div.lobbyScreenStartButtonGlowExpand {
 
 /*#region Action screen */
 div.actionScreenWrapper{
-    position: fixed;
+    position: absolute;
     top:calc(10 * var(--truevh));
     bottom: calc(var(--footer-height) * var(--truevh));
     left: 0;
@@ -597,7 +604,7 @@ div.actionScreenCover {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 15vw;
+    font-size: 15%;
     transition: opacity 0.5s, font-size 0.5s;
 }
 
@@ -622,12 +629,12 @@ div.actionScreenHeaderTopLine {
 div.actionScreenCardDiv {
     display: grid;
     height: calc(45 * var(--truevh));
-    width: 70vw;
+    width: 70%;
     overflow: hidden;
     grid-template-rows: auto calc(5 * var(--truevh));
     margin: 0 auto;
     border-radius: calc(2 * var(--truevh));
-    padding: 5vw;
+    padding: 5%;
     transition: all 0.5s;
     transform: rotate(2deg);
 }
@@ -643,7 +650,7 @@ div.actionScreenCardShrunkDiv {
 div.cardTextDiv {
     font-size: calc(5 * var(--truevh));
     background-color: rgb(255, 255, 255);
-    width: 70vw;
+    width: 70%;
     height: calc(40 * var(--truevh));
     color: transparent;
     background-clip: text;
@@ -676,8 +683,8 @@ div.questionCardsHeaderDiv {
 }
 
 div.questionCard {
-    padding: 2vw;
-    margin: 2vw;
+    padding: 2%;
+    margin: 2%;
     color: #ddd;
     font-size: calc(2 * var(--truevh));
     border-radius: calc(2 * var(--truevh));
@@ -690,7 +697,7 @@ div.questionCard {
 }
 
 div.questionCardExpanded {
-    width: 24vw;
+    width: 24%;
     opacity: 1;
     height: calc(20 * var(--truevh));
 }
@@ -805,8 +812,8 @@ div.actionscreencurrentactorbadge {
     font-size: calc(3.5 * var(--truevh));
     box-sizing: border-box;
     height: calc(5 * var(--truevh));
-    padding: 0 3vw;
-    margin-left: 3vw;
+    padding: 0 3%;
+    margin-left: 3%;
     transition: all 0.5s;
 }
 
@@ -830,7 +837,7 @@ div.playerBadgeName {
 }
 
 div.triangleUp {
-    position: fixed;
+    position: absolute;
     height: 0;
     width: 0;
     border: 10px solid transparent;
@@ -839,7 +846,7 @@ div.triangleUp {
 }
 
 div.overrideWrapper {
-    position: fixed;
+    position: absolute;
     background-color: #fff;
     border-radius: 5px;
     padding: 10px;
@@ -848,7 +855,7 @@ div.overrideWrapper {
 }
 
 div.leaveRoomWrapper {
-    position: fixed;
+    position: absolute;
     /*
     */
     background-image: url(bubbleDown.svg);

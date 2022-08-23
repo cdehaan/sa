@@ -67,17 +67,18 @@ window.onload = function() {
 
 //#region UI
 function GenerateCommonUI() {
-    document.body.addEventListener("click", RemoveLeaveRoom);
+    const mainWrapper = document.getElementById("MainWrapper");
+    mainWrapper.addEventListener("click", RemoveLeaveRoom);
 
     const confettiCanvas = document.createElement("canvas");
     confettiCanvas.id = "confettiCanvas";
     confettiCanvas.classList.add("confettiCanvas");
-    document.body.appendChild(confettiCanvas);
+    mainWrapper.appendChild(confettiCanvas);
     confetti.create(confettiCanvas, { resize: true, useWorker: true });
 
     const offlineCover = document.createElement("div");
     offlineCover.classList.add("offlineCover");
-    document.body.append(offlineCover);
+    mainWrapper.append(offlineCover);
 
     const offlineHeader = document.createElement("div");
     offlineHeader.classList.add("offlineHeader");
@@ -108,13 +109,13 @@ function GenerateCommonUI() {
     headerTextDiv.innerHTML = "Simply Anything";
     headerTextDiv.onclick = () => { headerTextDiv.classList.toggle("headerTextShadow"); }
     headerDiv.appendChild(headerTextDiv);
-    document.body.appendChild(headerDiv);
+    mainWrapper.appendChild(headerDiv);
 
     const footerDiv = document.createElement("div");
     footerDiv.id = "footerDiv";
     footerDiv.classList.add("footerDiv");
     footerDiv.style.display = "none";
-    document.body.appendChild(footerDiv);
+    mainWrapper.appendChild(footerDiv);
 
     const footerElements = [
         {name: "Score",    icon: "⭐", text: "0"},
@@ -146,7 +147,7 @@ function GenerateCommonUI() {
     qrDivWrapper.classList.add("qrDivWrapper");
     qrDivWrapper.style.display = "none";
     qrDivWrapper.style.opacity = "0";
-    document.body.append(qrDivWrapper);
+    mainWrapper.append(qrDivWrapper);
 
     const qrClose = document.createElement("div");
     qrClose.classList.add("qrClose");
@@ -179,13 +180,14 @@ function GenerateCommonUI() {
 function GenerateLoadingScreen() {
     DeconstructFirstScreen();
     document.getElementById("footerDiv").style.display = "none";
+    const mainWrapper = document.getElementById("MainWrapper");
 
     if(roomData.roomCode === null) {
         setTimeout(function(){
             const newGameDiv = document.createElement("div");
             newGameDiv.id = "newGameDiv";
             newGameDiv.classList.add("glassCard", "firstScreenGlass", "newGameDiv", "newGameExpandAnimation", "rotate45");
-            document.body.appendChild(newGameDiv);
+            mainWrapper.appendChild(newGameDiv);
     
                 const newGameTextDiv = document.createElement("div");
                 newGameTextDiv.classList.add("loadingScreenText");
@@ -216,7 +218,7 @@ function GenerateLoadingScreen() {
             newGameCircleDiv.id = "newGameCircleDiv";
             newGameCircleDiv.classList.add("orangeCircle");
             newGameCircleDiv.classList.add("circleExpandAnimation");
-            document.body.appendChild(newGameCircleDiv);
+            mainWrapper.appendChild(newGameCircleDiv);
     
         }, 1000*sessionData.animationSpeed);
     }
@@ -229,7 +231,7 @@ function GenerateLoadingScreen() {
         joinGameDiv.classList.add("rotateM85");
         joinGameDiv.classList.add("joinGameDiv");
         joinGameDiv.classList.add("joinGameExpandAnimation");
-        document.body.appendChild(joinGameDiv);
+        mainWrapper.appendChild(joinGameDiv);
 
             const joinGameTextDiv = document.createElement("div");
             joinGameTextDiv.classList.add("loadingScreenText");
@@ -270,7 +272,7 @@ function GenerateLoadingScreen() {
         joinGameCircleDiv.id = "joinGameCircleDiv";
         joinGameCircleDiv.classList.add("blueCircle");
         joinGameCircleDiv.classList.add("circleExpandAnimation");
-        document.body.appendChild(joinGameCircleDiv);
+        mainWrapper.appendChild(joinGameCircleDiv);
     }, 1200*sessionData.animationSpeed);
 
     setTimeout(function() {sessionData.animating = false;}, 1500);
@@ -321,11 +323,12 @@ function DeconstructFirstScreen() {
 function GeneratelobbyScreen() {
     sessionData.animating = true;
     document.getElementById("footerDiv").style.display = "";
+    const mainWrapper = document.getElementById("MainWrapper");
 
     const lobbyScreenWrapper = document.createElement("div");
     lobbyScreenWrapper.id = "lobbyScreenWrapper";
     lobbyScreenWrapper.classList.add("lobbyScreenWrapper");
-    document.body.appendChild(lobbyScreenWrapper);
+    mainWrapper.appendChild(lobbyScreenWrapper);
 
     const lobbyScreenHeader = document.createElement("div");
     lobbyScreenHeader.classList.add("lobbyScreenHeader", "lobbyScreenHeaderShrunk");
@@ -341,11 +344,11 @@ function GeneratelobbyScreen() {
     const myBadge = GeneratelobbyScreenBadge(myPlayerData.playerKey);
     const myActiveIndex = activePlayerList.findIndex(player => player.playerKey === myPlayerData.playerKey);
     myBadge.style.top = "50vh";
-    myBadge.style.left = "50vw";
+    myBadge.style.left = "50%";
     myBadge.style.alignItems = "center";
     badgeWrapper.appendChild(myBadge);
     myBadge.style.fontSize = "";
-    setTimeout(function() { myBadge.style.opacity = "1";    myBadge.style.height = "20vh";    myBadge.style.top = "40vh"; myBadge.style.width = "80vw"; myBadge.style.left = "10vw"; }, 100);
+    setTimeout(function() { myBadge.style.opacity = "1";    myBadge.style.height = "20vh";    myBadge.style.top = "40vh"; myBadge.style.width = "80%"; myBadge.style.left = "10%"; }, 100);
     setTimeout(function() { lobbyScreenHeader.classList.remove("lobbyScreenHeaderShrunk"); }, 600);
     setTimeout(function() { PlacelobbyScreenBadgeCss(myActiveIndex, myBadge);              }, 600);
 
@@ -397,9 +400,10 @@ function GeneratelobbyScreen() {
 function RegeneratelobbyScreen() {
     sessionData.animating = true;
     if(!document.getElementById("lobbyScreenWrapper")) { GeneratelobbyScreen(); return; }
+    const mainWrapper = document.getElementById("MainWrapper");
 
-    const badgeWrapper = document.body.querySelector(".badgeWrapper");
-    const lobbyScreenFooter = document.body.querySelector(".lobbyScreenFooter");
+    const badgeWrapper = mainWrapper.querySelector(".badgeWrapper");
+    const lobbyScreenFooter = mainWrapper.querySelector(".lobbyScreenFooter");
     if(!badgeWrapper || !lobbyScreenFooter) { GeneratelobbyScreen(); return; }
 
     const playerBadges = document.querySelectorAll(".lobbyScreenBadge");
@@ -473,9 +477,9 @@ function PlacelobbyScreenBadgeCss(playerIndex, badge) {
     const badgeTruevhTop = currentRow * rowHeight;
 
     badge.style.height = `calc(${badgeTruevhHeight} * var(--truevh))`;
-    badge.style.width  = columnWidth*0.8 + "vw";
+    badge.style.width  = columnWidth*0.8 + "%";
     badge.style.top  = `calc(${badgeTruevhTop} * var(--truevh))`;
-    badge.style.left = (columnWidth*0.1 + (currentColumn * columnWidth)) + "vw";
+    badge.style.left = (columnWidth*0.1 + (currentColumn * columnWidth)) + "%";
 
     badge.style.borderRadius = (rowHeight/4) + "vh";
     badge.style.opacity      = "1";
@@ -511,6 +515,7 @@ function GenerateActionScreen(normalSpeed) {
     // If action screen has already been generated, return.
     // Can happen when game becomes visible, but isn't reloaded. (e.g. minimized window)
     if(document.getElementById("actionScreenWrapper")) { return; }
+    const mainWrapper = document.getElementById("MainWrapper");
 
     document.getElementById("footerDiv").style.display = "";
     document.getElementById("footerScoreText").innerHTML = myPlayerData.playerScore;
@@ -518,7 +523,7 @@ function GenerateActionScreen(normalSpeed) {
     const actionScreenWrapper = document.createElement("div");
     actionScreenWrapper.id = "actionScreenWrapper";
     actionScreenWrapper.classList.add("actionScreenWrapper");
-    document.body.appendChild(actionScreenWrapper);
+    mainWrapper.appendChild(actionScreenWrapper);
 
     // Space for "Do this:" (if currently acting) or "Watch..."
     const actionScreenHeader = document.createElement("div");
@@ -549,12 +554,13 @@ function PopulateActionScreen(normalSpeed) {
     const actionScreenHeader    = document.getElementById("actionScreenHeader");
     const actionScreenContent   = document.getElementById("actionScreenContent");
     const actionScreenFooter    = document.getElementById("actionScreenFooter");
+    const mainWrapper = document.getElementById("MainWrapper");
 
     // Your turn to act
     if (roomData.roomCurrentPlayer == myPlayerData.playerIndex) {
 
         // If the screen is already populated, just update the bar
-        if(document.body.querySelector(".cardTextDiv")) {
+        if(mainWrapper.querySelector(".cardTextDiv")) {
             UpdateProgressBar();
             setTimeout(() => { sessionData.animating = false; }, 500);
             return;
@@ -689,6 +695,7 @@ function ToggleLeaveRoom(event) {
         return;
     }
     const footerRoomLocation = document.getElementById("footerRoomWrapper").getBoundingClientRect();
+    const mainWrapper = document.getElementById("MainWrapper");
 
     const leaveRoomWrapper = document.createElement("div");
     leaveRoomWrapper.classList.add("leaveRoomWrapper");
@@ -696,7 +703,7 @@ function ToggleLeaveRoom(event) {
     leaveRoomWrapper.style.width  = footerRoomLocation.width-1 + "px"; // The footer element has a 1px right border
     leaveRoomWrapper.style.bottom = "calc(var(--footer-height) * var(--truevh))";  // The top of the footer is the bottom of the wrapper
     leaveRoomWrapper.style.height = footerRoomLocation.width * 0.75 + "px";  // the popup is a 4:3 rectangle
-    document.body.append(leaveRoomWrapper);
+    mainWrapper.append(leaveRoomWrapper);
 
     const leaveRoomText = document.createElement("div");
     leaveRoomText.classList.add("leaveRoomText");
@@ -708,7 +715,8 @@ function ToggleLeaveRoom(event) {
 }
 
 function RemoveLeaveRoom() {
-    const leaveRoomWrapper = document.body.querySelector(".leaveRoomWrapper");
+    const mainWrapper = document.getElementById("MainWrapper");
+    const leaveRoomWrapper = mainWrapper.querySelector(".leaveRoomWrapper");
     if(leaveRoomWrapper) { leaveRoomWrapper.remove(); }
 }
 
@@ -727,7 +735,9 @@ function ToggleOverride(event) {
     triangleDiv.classList.add("triangleUp");
     triangleDiv.style.top = (menuTop-10) + "px";
     triangleDiv.style.left = (menuLeft + (menuWidth/2) -10) + "px";
-    document.body.append(triangleDiv);
+
+    const mainWrapper = document.getElementById("MainWrapper");
+    mainWrapper.append(triangleDiv);
 
     const overrideWrapper = document.createElement("div");
     overrideWrapper.classList.add("overrideWrapper");
@@ -744,7 +754,7 @@ function ToggleOverride(event) {
             overrideWrapper.onclick = ProgressQuestions;
             break;
     }    
-    document.body.append(overrideWrapper);
+    mainWrapper.append(overrideWrapper);
 }
 
 function RemoveOverride() {
@@ -1393,21 +1403,23 @@ function SocketDisconnected() {
 }
 
 function ShowConnected() {
+    const mainWrapper = document.getElementById("MainWrapper");
+
     // The spinner on the first bar of the loading screen (500ms delay avoids a flash)
     setTimeout(() => {  document.getElementById("headerTextDiv")?.classList.remove("headerLoading"); }, 500*sessionData.animationSpeed);
 
 
     // The offline display actions vanish instantly
-    const offlineActions = document.body.querySelector(".offlineActions");
+    const offlineActions = mainWrapper.querySelector(".offlineActions");
     offlineActions.style.visibility = "hidden";
 
     // The offline display header text and colour change
-    const offlineHeader = document.body.querySelector(".offlineHeader");
+    const offlineHeader = mainWrapper.querySelector(".offlineHeader");
     offlineHeader.innerHTML = "Reconnected";
     offlineHeader.classList.add("reconnect");
 
     // The offline display iself fades out
-    const offlineCover = document.body.querySelector(".offlineCover");
+    const offlineCover = mainWrapper.querySelector(".offlineCover");
     setTimeout(() => { offlineCover.style.opacity = 0; }, 1000*sessionData.animationSpeed);
 
     // The whole display is reset to showing an "Offline" message
@@ -1420,7 +1432,8 @@ function ShowConnected() {
 }
 
 function ShowDisconnected() {
-    const offlineCover = document.body.querySelector(".offlineCover");
+    const mainWrapper = document.getElementById("MainWrapper");
+    const offlineCover = mainWrapper.querySelector(".offlineCover");
     offlineCover.style.display = "flex";
     setTimeout(() => { offlineCover.style.opacity = 1; }, 0);
 }
