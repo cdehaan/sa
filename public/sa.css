@@ -214,6 +214,7 @@ div.qrCodeFooterDiv {
 .qrCode {
     transition: all 0.5s;
     background: #fff;
+    width: calc(min((var(--truevh) * 35), 50vw));
 }
 
 .qrCodeShrink {
@@ -516,6 +517,8 @@ div.lobbyScreenFooterShrunk {
 }
 
 button.lobbyScreenStartButton {    
+    justify-content: center;
+    display: flex;
     height: calc(5 * var(--truevh));
     width: 50%;
     color: #fff;

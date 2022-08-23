@@ -379,7 +379,7 @@ function GeneratelobbyScreen() {
     lobbyScreenLeaveButton.textContent = "Leave";
     lobbyScreenLeaveButton.onclick = function() { LeaveGame(); };
     lobbyScreenFooter.appendChild(lobbyScreenLeaveButton);
-    
+
     const qrCodeFooterDiv = document.createElement("div");
     qrCodeFooterDiv.classList.add("qrCodeFooterDiv");
     const qrcode = new QRCode(qrCodeFooterDiv, { width : 500, height : 500 });
@@ -1501,8 +1501,15 @@ function ShowQR() {
     qrCodeDiv.innerHTML = "";
     const qrcode = new QRCode(qrCodeDiv);
     qrcode.makeCode(`https://www.simplyanything.ca?room=${roomData.roomCode}`);
+
+    const qrCodeCanvas = qrCodeDiv.querySelector("canvas");
+    //qrCodeCanvas.removeAttribute("width");
+    //qrCodeCanvas.removeAttribute("height");
+    qrCodeCanvas.classList.add("qrCode");
+
     const qrCodeImg = qrCodeDiv.querySelector("img");
     qrCodeImg.classList.add("qrCode");
+
     qrFooter.innerHTML = `www.simplyanything.ca/?room=${roomData.roomCode}`;
     setTimeout(() => {
         ShrinkText(qrFooter);
