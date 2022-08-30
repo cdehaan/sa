@@ -1610,6 +1610,7 @@ function StringTo3rdPerson(questionString) {
 }
 
 function ShrinkText(container, textElement) {
+    return;
     if(textElement === undefined) { textElement = container; }
     let textAltered = false;
     const originalTransitionRule = textElement.style.transition;
