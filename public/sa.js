@@ -172,7 +172,9 @@ function GenerateCommonUI() {
     qrFooter.id = "qrFooter";
     qrFooter.classList.add("qrFooter");
     qrDivWrapper.append(qrFooter);
-    ShrinkText(qrFooter);
+    setTimeout(() => {
+        ShrinkText(qrFooter);
+    }, 100);
 }
 
 // Loading screen region
@@ -639,7 +641,9 @@ function PopulateActionScreen(normalSpeed) {
 
         setTimeout(() => {
             actorBadge.classList.remove("zeroAll");
-            ShrinkText(actionScreenHeaderTopLine, playerBadgeName);            
+            setTimeout(() => {
+                //ShrinkText(actionScreenHeaderTopLine, playerBadgeName);            
+            }, 600);
         }, 0);
 
         actorBadge.addEventListener("click", ToggleOverride);
@@ -711,7 +715,9 @@ function ToggleLeaveRoom(event) {
     leaveRoomText.onclick = LeaveGame;
     leaveRoomWrapper.append(leaveRoomText);
 
-    ShrinkText(leaveRoomText);
+    setTimeout(() => {
+        ShrinkText(leaveRoomText);
+    }, 100);        
 }
 
 function RemoveLeaveRoom() {
@@ -977,7 +983,9 @@ function PopulateQuestionCardEmoji() {
             if(currentQuestionCard.scrollHeight > currentQuestionCard.clientHeight) {
                 currentQuestionCardEmoji.style.letterSpacing = Math.max(-10, parseInt(currentQuestionCardEmoji.style.letterSpacing)-2) + "px";
             }
-            ShrinkText(currentQuestionCard);
+            setTimeout(() => {
+                ShrinkText(currentQuestionCard);
+            }, 100);        
         }, emojiIndex*emojiStaggerTime);
     });
 }
@@ -1357,7 +1365,9 @@ function ReadMsg(msg, personal) {
     document.getElementById("footerRoomText").innerHTML   = roomData.roomCode;
     document.getElementById("footerPlayerIcon").innerHTML = EmojiHash(myPlayerData.playerName + myPlayerData.playerKey);
     document.getElementById("footerPlayerText").innerHTML = myPlayerData.playerName;
-    ShrinkText(document.getElementById("footerPlayerWrapper"), document.getElementById("footerPlayerText"));    
+    setTimeout(() => {
+        ShrinkText(document.getElementById("footerPlayerWrapper"), document.getElementById("footerPlayerText"));    
+    }, 100);        
 
     return true;
 }
@@ -1513,7 +1523,7 @@ function ShowQR() {
     qrFooter.innerHTML = `www.simplyanything.ca/?room=${roomData.roomCode}`;
     setTimeout(() => {
         ShrinkText(qrFooter);
-    }, 10);
+    }, 100);
 
     qrDivWrapper.style.display = "";
     qrDivWrapper.style.opacity = "1";
@@ -1610,7 +1620,6 @@ function StringTo3rdPerson(questionString) {
 }
 
 function ShrinkText(container, textElement) {
-    return;
     if(textElement === undefined) { textElement = container; }
     let textAltered = false;
     const originalTransitionRule = textElement.style.transition;
@@ -1618,13 +1627,19 @@ function ShrinkText(container, textElement) {
 
     textElement.style.transition = "font-size 0s";
     textElement.style.fontSize = parseFloat(window.getComputedStyle(textElement).fontSize)*1.1 + "px";
-    while(container.scrollWidth > container.offsetWidth) {
+
+    let loopCount = 0;
+    while(container.scrollWidth > container.offsetWidth && loopCount < 100) {
         textElement.style.fontSize = parseFloat(window.getComputedStyle(textElement).fontSize)*0.98 + "px";
         textAltered = true;
+        loopCount++;
     }
-    while(container.scrollHeight > container.offsetHeight) {
+
+    loopCount = 0;
+    while(container.scrollHeight > container.offsetHeight && loopCount < 100) {
         textElement.style.fontSize = parseFloat(window.getComputedStyle(textElement).fontSize)*0.98 + "px";
         textAltered = true;
+        loopCount++;
     }
 
     if(textAltered) {
