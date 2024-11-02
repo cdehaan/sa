@@ -703,6 +703,7 @@ function ToggleLeaveRoom(event) {
     leaveRoomWrapper.style.width  = footerRoomLocation.width-1 + "px"; // The footer element has a 1px right border
     leaveRoomWrapper.style.bottom = "calc(var(--footer-height) * var(--truevh))";  // The top of the footer is the bottom of the wrapper
     leaveRoomWrapper.style.height = footerRoomLocation.width * 0.75 + "px";  // the popup is a 4:3 rectangle
+    leaveRoomWrapper.style.zIndex = "20";
     mainWrapper.append(leaveRoomWrapper);
 
     const leaveRoomText = document.createElement("div");
