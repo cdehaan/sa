@@ -695,7 +695,7 @@ div.questionCard {
 }
 
 div.questionCardExpanded {
-    width: 24%;
+    width: 74%;
     opacity: 1;
     height: calc(20 * var(--truevh));
 }
@@ -854,8 +854,6 @@ div.overrideWrapper {
 
 div.leaveRoomWrapper {
     position: absolute;
-    /*
-    */
     background-image: url(bubbleDown.svg);
     background-size: contain;
     background-repeat: no-repeat;
@@ -873,10 +871,23 @@ div.leaveRoomText {
     border-radius: 0.5em;
     display: flex;
     align-items: center;
-    /*
+}
+
+div.languageSelectorWrapper {
+    position: absolute;
     background-color: #fff;
-    border: 1px solid #888;
-    */
+    border-radius: 5px 5px 0 0;
+    padding: 0 10px;
+    box-sizing: border-box;
+    border-right: 1px solid #888;
+    transition: opacity 0.5s;
+    font-size: calc(2 * var(--truevh));
+}
+
+span.languageOption {
+    display: flex;
+    cursor: pointer;
+    margin: 20px 0;
 }
 
 .attentionGlow {
