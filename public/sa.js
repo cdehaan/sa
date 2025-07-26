@@ -1,3 +1,9 @@
+const languages = [
+    {name: "english",  text: "English", flag: "🇬🇧"},
+    {name: "japanese", text: "日本語", flag: "🇯🇵"},
+    {name: "korean",   text: "한국어", flag: "🇰🇷"},
+]
+
 let roomData = {
     roomCode: null,
     roomGameState: null, // -1 no room (loading screen), 0 waiting room, 1 playing, 2 answer shown
@@ -18,20 +24,22 @@ const myPlayerData = {
 
 const sessionData = {
     animating: true,
+    language: "english",
     connectionEvents: [],  // Functions to run when a connection is made or re-established
     badgeRemovals: [],     // A badge is set for removal, but this can be stopped if the player reconnects quickly
     rowsPerColumn: 6,      // This is a UI choice for the waiting room. This many player's badges can be stacked before another column is needed, should be able to put into CSS
-    animationSpeed: 1      // Another UI choice, but affects settimeout delays, so hard to stick totally into CSS
+    animationSpeed: 1,     // Another UI choice, but affects settimeout delays, so hard to stick totally into CSS
 }
+
+const storedLanguage = localStorage.getItem("language");
+const languageObject = languages.find(language => language.name === storedLanguage) || languages[0];
+if (languageObject) {
+    sessionData.language = languageObject.name;
+}
+const languageText = languageObject ? languageObject.text : "English";
 
 let playerList = [];
 let socket;
-
-const languages = [
-    {name: "english",  text: "English", flag: "🇬🇧"},
-    {name: "japanese", text: "日本語", flag: "🇯🇵"},
-    {name: "korean",   text: "한국어", flag: "🇰🇷"},
-]
 
 window.onload = function() {
     // Mobile browser vh is problematic, so we make truevh, and keep it updated
@@ -69,6 +77,7 @@ window.onload = function() {
 function GenerateCommonUI() {
     const mainWrapper = document.getElementById("MainWrapper");
     mainWrapper.addEventListener("click", RemoveLeaveRoom);
+    mainWrapper.addEventListener("click", RemoveLanguageSelector);
 
     const confettiCanvas = document.createElement("canvas");
     confettiCanvas.id = "confettiCanvas";
@@ -118,11 +127,11 @@ function GenerateCommonUI() {
     mainWrapper.appendChild(footerDiv);
 
     const footerElements = [
-        {name: "Score",    icon: "⭐", text: "0"},
-        {name: "Room",     icon: "🚪", text: "",        onclick: ToggleLeaveRoom},
-        {name: "Player",   icon: "👤", text: ""},
-        {name: "Qr",       icon: "▞",  text: "Invite",  onclick: ShowQR},
-        {name: "Language", icon: "🇬🇧", text: "English", onclick: ShowLanguage}
+        {name: "Score",    icon: "⭐",                text: "0"},
+        {name: "Room",     icon: "🚪",                text: "",           onclick: ToggleLeaveRoom},
+        {name: "Player",   icon: "👤",                text: ""},
+        {name: "Qr",       icon: "▞",                 text: "Invite",     onclick: ShowQR},
+        {name: "Language", icon: languageObject.flag, text: languageText, onclick: ToggleLanguageSelector}
     ];
 
     footerElements.forEach(element => {
@@ -566,7 +575,7 @@ function PopulateActionScreen(normalSpeed) {
             return;
         }
 
-        actionScreenHeader.innerHTML = "Do this:";
+        actionScreenHeader.innerHTML = GetTranslation(sessionData.language, "Do this:");
 
         const actionScreenCardDiv = document.createElement("div");
         actionScreenCardDiv.id = "actionScreenCardDiv";
@@ -575,9 +584,14 @@ function PopulateActionScreen(normalSpeed) {
         actionScreenCardDiv.classList.add("actionScreenCardShrunkDiv");
         actionScreenContent.append(actionScreenCardDiv);
 
-        const cardText = StringTo2ndPerson(roomData.roomCard.card_command) + " " + StringTo2ndPerson(roomData.roomCard.questions.find(question => question.question_index == roomData.roomCorrectAnswer).question_text);
+        const roomCard = roomData.roomCard;
+        const questionObject = roomCard.questions.find(question => question.question_index == roomData.roomCorrectAnswer);
+        const questionTranslationObject = roomCard.questionTranslations.find(questionTranslation => questionTranslation.source_key === questionObject.question_key);
+
+        const cardTextEnglish = StringTo2ndPerson(roomCard.card_command) + " " + StringTo2ndPerson(questionObject.question_text);
+        const cardTextTranslated = sessionData.language === "english" ? cardTextEnglish : !questionTranslationObject ? cardTextEnglish : (roomCard.cardTranslation.translation_second || "") + " " + questionTranslationObject.translation_second;
         const cardTextDiv = document.createElement("div");
-        cardTextDiv.innerHTML = cardText;
+        cardTextDiv.innerHTML = cardTextTranslated;
         cardTextDiv.classList.add("cardTextDiv");
         actionScreenCardDiv.appendChild(cardTextDiv);
         const cardFooterDiv = document.createElement("div");
@@ -639,7 +653,7 @@ function PopulateActionScreen(normalSpeed) {
 
         setTimeout(() => {
             actorBadge.classList.remove("zeroAll");
-            ShrinkText(actionScreenHeaderTopLine, playerBadgeName);            
+            //ShrinkText(actionScreenHeaderTopLine, playerBadgeName);            
         }, 0);
 
         actorBadge.addEventListener("click", ToggleOverride);
@@ -699,7 +713,7 @@ function ToggleLeaveRoom(event) {
 
     const leaveRoomWrapper = document.createElement("div");
     leaveRoomWrapper.classList.add("leaveRoomWrapper");
-    leaveRoomWrapper.style.left   = footerRoomLocation.left + (footerRoomLocation.width/4) + "px"; // Lines up the speech bubble
+    leaveRoomWrapper.style.left   = footerRoomLocation.left + (footerRoomLocation.width/4) + "px"; // Lines up the point of the speech bubble
     leaveRoomWrapper.style.width  = footerRoomLocation.width-1 + "px"; // The footer element has a 1px right border
     leaveRoomWrapper.style.bottom = "calc(var(--footer-height) * var(--truevh))";  // The top of the footer is the bottom of the wrapper
     leaveRoomWrapper.style.height = footerRoomLocation.width * 0.75 + "px";  // the popup is a 4:3 rectangle
@@ -719,6 +733,43 @@ function RemoveLeaveRoom() {
     const mainWrapper = document.getElementById("MainWrapper");
     const leaveRoomWrapper = mainWrapper.querySelector(".leaveRoomWrapper");
     if(leaveRoomWrapper) { leaveRoomWrapper.remove(); }
+}
+
+function ToggleLanguageSelector(event) {
+    event.stopPropagation();
+    if(document.querySelector(".languageSelectorWrapper")) {
+        RemoveLanguageSelector();
+        return;
+    }
+    const footerLanguageLocation = document.getElementById("footerLanguageWrapper").getBoundingClientRect();
+    const mainWrapper = document.getElementById("MainWrapper");
+
+    const languageSelectorWrapper = document.createElement("div");
+    languageSelectorWrapper.classList.add("languageSelectorWrapper");
+    languageSelectorWrapper.style.left   = footerLanguageLocation.left + "px";
+    languageSelectorWrapper.style.width  = footerLanguageLocation.width + "px";
+    languageSelectorWrapper.style.bottom = "calc(var(--footer-height) * var(--truevh))";
+    languageSelectorWrapper.style.zIndex = "20";
+    mainWrapper.append(languageSelectorWrapper);
+
+    languages.forEach(language => {
+        const languageSpan = document.createElement("span");
+        languageSpan.classList.add("languageOption");
+        languageSpan.textContent = `${language.flag} ${language.text}`;
+        languageSpan.onclick = function() {
+            RemoveLanguageSelector();
+            if(sessionData.language == language.name) { return; }
+            localStorage.setItem("language", language.name);
+            location.reload();
+        };
+        languageSelectorWrapper.appendChild(languageSpan);
+    });
+}
+
+function RemoveLanguageSelector() {
+    const mainWrapper = document.getElementById("MainWrapper");
+    const languageSelectorWrapper = mainWrapper.querySelector(".languageSelectorWrapper");
+    if(languageSelectorWrapper) { languageSelectorWrapper.remove(); }
 }
 
 function ToggleOverride(event) {
@@ -1019,7 +1070,15 @@ function GenerateActionScreenQuestionCard(question) {
     const questionIndex = question.question_index;
     questionCard.classList.add("glassCard", "questionCard", "zeroAll");
     questionCard.setAttribute("questionindex", questionIndex);
-    questionCard.innerHTML = StringTo3rdPerson(roomData.roomCard.card_command) + " " + StringTo3rdPerson(question.question_text);
+
+    const roomCard = roomData.roomCard;
+    const questionTranslationObject = roomCard.questionTranslations.find(questionTranslation => questionTranslation.source_key === question.question_key);
+
+    const cardTextEnglish = StringTo3rdPerson(roomCard.card_command) + " " + StringTo3rdPerson(question.question_text);
+    const cardTextTranslated = sessionData.language === "english" ? cardTextEnglish : !questionTranslationObject ? cardTextEnglish : (roomCard.cardTranslation.translation_third || "") + " " + questionTranslationObject.translation_third;
+
+    questionCard.innerHTML = cardTextTranslated;
+    
     questionCard.addEventListener("click", function() { SendGuess(questionIndex); })
 
     const currentQuestionCardEmoji = document.createElement("div");
@@ -1635,3 +1694,13 @@ function ShrinkText(container, textElement) {
     textElement.style.transition = originalTransitionRule;
 }
 //#endregion
+
+
+const translations = [
+    {english: "Do this:", japanese: "これをやる", korean: "이것을 하다"},
+];
+
+function GetTranslation(language, english) {
+    const translationObject = translations.find(t => t.english === english);
+    return (translationObject && translationObject[language]) || english;
+}

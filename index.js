@@ -404,7 +404,7 @@ async function StartGame(socket, startData) {
 
     // Pick a good random card for the first round of the game
     const cardResult = await pool.query("SELECT * FROM card WHERE card_key != 8 AND card_key != 11 AND card_key != 12 ORDER BY RAND() LIMIT 1;");
-    if (!cardResult) {
+    if (!cardResult || cardResult[0].length == 0) {
         returnData.error = "Couldn't pick a random card when starting game.";
         socket.emit('game started', JSON.stringify(returnData));
         return;
@@ -413,16 +413,39 @@ async function StartGame(socket, startData) {
     const cardKey = randomCard.card_key;
     returnData.card = randomCard;
 
+    // Fetch translation for the selected card
+    const cardTranslationResult = await pool.query(
+        `SELECT lang_key, translation_second, translation_third FROM translation WHERE source_key = ${cardKey} AND translation_type = 1;`
+    );
+    if (!cardTranslationResult) {
+        returnData.error = "Couldn't fetch card translations when starting game.";
+        socket.emit('game started', JSON.stringify(returnData));
+        return;
+    }
+    returnData.card.cardTranslation = cardTranslationResult[0];
 
     // Pull all questions on the card we picked
     const questionsResult = await pool.query(`SELECT * FROM question WHERE card_key = ${cardKey};`);
-    if (!questionsResult) {
+    if (!questionsResult || questionsResult[0].length == 0) {
         returnData.error = "Couldn't pull card questions when starting game.";
         socket.emit('game started', JSON.stringify(returnData));
         return;
     }
     returnData.questions = questionsResult[0];
 
+    // Extract question keys to use in the IN clause
+    const questionKeys = returnData.questions.map((question) => question.question_key);
+
+    // Fetch translations for all questions on the selected card
+    const questionTranslationsResult = await pool.query(
+        `SELECT lang_key, source_key, translation_second, translation_third FROM translation WHERE source_key IN (${questionKeys.join(",")}) AND translation_type = 2;`
+    );
+    if (!questionTranslationsResult) {
+        returnData.error = "Couldn't fetch question translations when starting game.";
+        socket.emit('game started', JSON.stringify(returnData));
+        return;
+    }
+    returnData.questions.questionTranslations = questionTranslationsResult[0];
 
     // Pick a random answer, then save the current player, card, and question answer in the room
     const randomQuestion = Math.floor(Math.random() * questionsResult[0].length)+1;
@@ -668,17 +691,43 @@ async function ProgressQuestions(socket, progressData) {
         return;
     }
     const randomCard = cardResult[0][0];
+    const cardKey = randomCard.card_key;
     returnData.card = randomCard;
 
+    // Fetch translation for the selected card
+    const cardTranslationResult = await pool.query(
+        `SELECT lang_key, translation_second, translation_third FROM translation WHERE source_key = ${cardKey} AND translation_type = 1;`
+    );
+    if (!cardTranslationResult) {
+        returnData.error = "Couldn't fetch card translations while progressing question.";
+        socket.emit('game started', JSON.stringify(returnData));
+        return;
+    }
+    returnData.card.cardTranslation = cardTranslationResult[0];
 
     // Pull all the questions from the card then select a random one
-    const questionsResult = await pool.query(`SELECT * FROM question WHERE card_key = ${randomCard.card_key};`);
+    const questionsResult = await pool.query(`SELECT * FROM question WHERE card_key = ${cardKey};`);
     if (!questionsResult || questionsResult[0].length == 0) {
         returnData.error = "Couldn't pull questions while progressing question.";
         socket.emit('questions progressed', JSON.stringify(returnData));
         return;
     }
     returnData.questions = questionsResult[0];
+
+    // Extract question keys to use in the IN clause
+    const questionKeys = returnData.questions.map((question) => question.question_key);
+
+    // Fetch translations for all questions on the selected card
+    const questionTranslationsResult = await pool.query(
+        `SELECT lang_key, source_key, translation_second, translation_third FROM translation WHERE source_key IN (${questionKeys.join(",")}) AND translation_type = 2;`
+    );
+    if (!questionTranslationsResult) {
+        returnData.error = "Couldn't fetch question translations while progressing question.";
+        socket.emit('game started', JSON.stringify(returnData));
+        return;
+    }
+    returnData.questionTranslations = questionTranslationsResult[0];
+
     const randomQuestion = Math.floor(Math.random() * questionsResult[0].length)+1;
     returnData.questionIndex = randomQuestion;
 
@@ -751,8 +800,27 @@ async function PullRoomData(roomCode) {
     // Game has started, send back info about the current card
     if (roomData.roomGameState > 0) {
         const cardResult = await pool.query(`SELECT * FROM card WHERE card_key=${roomData.roomCardKey};`);
-        if (!cardResult) { returnData.error = "Couldn't card info while joining room."; socket.emit('game joined', JSON.stringify(returnData)); return; }
-        roomData.roomCard = cardResult[0][0];
+        if (!cardResult || cardResult[0].length == 0) {
+            returnData.error = "Couldn't card info while joining room.";
+            socket.emit('game joined', JSON.stringify(returnData));
+            return;
+        }
+        const currentCard = cardResult[0][0];
+        const cardKey = currentCard.card_key;
+        roomData.roomCard = currentCard;
+
+        // Fetch translation for the current card
+        const cardTranslationResult = await pool.query(
+            `SELECT lang_key, translation_second, translation_third FROM translation WHERE source_key = ${cardKey} AND translation_type = 1;`
+        );
+        if (!cardTranslationResult) {
+            returnData.error = "Couldn't fetch card translations while joining room.";
+            socket.emit('game started', JSON.stringify(returnData));
+            return;
+        }
+        if(cardTranslationResult.length > 0) {
+            roomData.roomCard.cardTranslation = cardTranslationResult[0];
+        }
 
         const questionsResult = await pool.query(`SELECT * FROM question WHERE card_key = ${roomData.roomCardKey};`);
         if (!questionsResult) {
@@ -760,8 +828,22 @@ async function PullRoomData(roomCode) {
             return;
         }
         roomData.roomCard.questions = questionsResult[0];
+
+        // Extract question keys to use in the IN clause
+        const questionKeys = roomData.roomCard.questions.map((question) => question.question_key);
+
+        // Fetch translations for all questions on the selected card
+        const questionTranslationsResult = await pool.query(
+            `SELECT lang_key, source_key, translation_second, translation_third FROM translation WHERE source_key IN (${questionKeys.join(",")}) AND translation_type = 2;`
+        );
+        if (!questionTranslationsResult) {
+            returnData.error = "Couldn't fetch question translations when starting game.";
+            socket.emit('game started', JSON.stringify(returnData));
+            return;
+        }
+        roomData.roomCard.questionTranslations = questionTranslationsResult[0];
     }
-    
+
     return roomData;
 }
 
