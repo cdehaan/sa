@@ -4,6 +4,7 @@
     "license": "ISC",
     "main": "index.js",
     "scripts": {
+        "build": "tsc",
         "start": "node index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -17,6 +18,10 @@
     "keywords": [],
     "author": "Chris DeHaan",
     "devDependencies": {
-        "jest": "^28.1.0"
+        "@types/express": "^5.0.3",
+        "@types/node": "^24.1.0",
+        "jest": "^28.1.0",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.8.3"
     }
 }
