@@ -179,8 +179,7 @@ div.footerDiv {
     font-size: calc(2 * var(--truevh));
     white-space: nowrap;
     z-index: 10;
-    background-color: rgba(255,255,255,1);
-    transition: opacity 0.5s;
+    transition: opacity 0.5s, transform 0.5s ease;
 }
 
 div.footerWrapper {
@@ -190,6 +189,7 @@ div.footerWrapper {
     height: 100%;
     flex: 1 1 0;
     justify-items: center;
+    background-color: #fff;
     border-right: 1px solid #888;
     line-height: calc(3 * var(--truevh));
     overflow: hidden;
@@ -648,7 +648,6 @@ div.actionScreenCardShrunkDiv {
 div.cardTextDiv {
     font-size: calc(5 * var(--truevh));
     background-color: rgb(255, 255, 255);
-    width: 70%;
     height: calc(40 * var(--truevh));
     color: transparent;
     background-clip: text;
@@ -885,6 +884,7 @@ div.languageSelectorWrapper {
 }
 
 span.languageOption {
+    font-size: calc(1.5 * var(--truevh));
     display: flex;
     cursor: pointer;
     margin: 20px 0;

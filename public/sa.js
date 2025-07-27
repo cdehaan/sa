@@ -1,9 +1,3 @@
-const languages = [
-    {name: "english",  text: "English", flag: "🇬🇧"},
-    {name: "japanese", text: "日本語", flag: "🇯🇵"},
-    {name: "korean",   text: "한국어", flag: "🇰🇷"},
-]
-
 let roomData = {
     roomCode: null,
     roomGameState: null, // -1 no room (loading screen), 0 waiting room, 1 playing, 2 answer shown
@@ -12,6 +6,7 @@ let roomData = {
     roomCorrectAnswer: null,
     roomQuestionRevealed: false
 };
+
 
 const myPlayerData = {
     playerKey:      null,
@@ -22,6 +17,7 @@ const myPlayerData = {
     playerScore:    0
 };
 
+
 const sessionData = {
     animating: true,
     language: "english",
@@ -31,11 +27,16 @@ const sessionData = {
     animationSpeed: 1,     // Another UI choice, but affects settimeout delays, so hard to stick totally into CSS
 }
 
+
+const languages = [
+    {name: "english",  text: "English", flag: "🇬🇧"},
+    {name: "japanese", text: "日本語", flag: "🇯🇵"},
+    {name: "korean",   text: "한국어", flag: "🇰🇷"},
+]
+
 const storedLanguage = localStorage.getItem("language");
 const languageObject = languages.find(language => language.name === storedLanguage) || languages[0];
-if (languageObject) {
-    sessionData.language = languageObject.name;
-}
+if (languageObject) { sessionData.language = languageObject.name; }
 const languageText = languageObject ? languageObject.text : "English";
 
 let playerList = [];
@@ -91,7 +92,7 @@ function GenerateCommonUI() {
 
     const offlineHeader = document.createElement("div");
     offlineHeader.classList.add("offlineHeader");
-    offlineHeader.innerHTML = "Game disconnected";
+    offlineHeader.innerHTML = GetTranslation("Game disconnected");
     offlineCover.append(offlineHeader);
 
     const offlineActions = document.createElement("div");
@@ -99,12 +100,12 @@ function GenerateCommonUI() {
     offlineCover.append(offlineActions);
 
     const offlineWait = document.createElement("div");
-    offlineWait.innerHTML = "Wait or";
+    offlineWait.innerHTML = GetTranslation("Wait or");
     offlineActions.append(offlineWait);
 
     const offlineReload = document.createElement("div");
     offlineReload.classList.add("offlineButton");
-    offlineReload.innerHTML = "Reload";
+    offlineReload.innerHTML = GetTranslation("Reload");
     offlineReload.onclick = () => { location.reload(); }
     offlineActions.append(offlineReload);
 
@@ -128,12 +129,12 @@ function GenerateCommonUI() {
 
     const footerElements = [
         {name: "Score",    icon: "⭐",                text: "0"},
-        {name: "Room",     icon: "🚪",                text: "",           onclick: ToggleLeaveRoom},
+        {name: "Room",     icon: "🚪",                text: "",                       onclick: ToggleLeaveRoom},
         {name: "Player",   icon: "👤",                text: ""},
-        {name: "Qr",       icon: "▞",                 text: "Invite",     onclick: ShowQR},
-        {name: "Language", icon: languageObject.flag, text: languageText, onclick: ToggleLanguageSelector}
+        {name: "Qr",       icon: "▞",                 text: GetTranslation("Invite"), onclick: ShowQR},
+        {name: "Language", icon: languageObject.flag, text: languageText,             onclick: ToggleLanguageSelector}
     ];
-
+    
     footerElements.forEach(element => {
         const footerWrapper = document.createElement("div");
         footerWrapper.id = `footer${element.name}Wrapper`;
@@ -169,7 +170,7 @@ function GenerateCommonUI() {
     qrDivWrapper.append(qrClose);
 
     const qrHeader = document.createElement("div");
-    qrHeader.innerHTML = "Scan to join!";
+    qrHeader.innerHTML = GetTranslation("Scan to join!");
     qrDivWrapper.append(qrHeader);
 
     const qrCodeDiv = document.createElement("div");
@@ -200,7 +201,7 @@ function GenerateLoadingScreen() {
     
                 const newGameTextDiv = document.createElement("div");
                 newGameTextDiv.classList.add("loadingScreenText");
-                newGameTextDiv.innerHTML = "New Game";
+                newGameTextDiv.innerHTML = GetTranslation("New Game");
                 newGameDiv.appendChild(newGameTextDiv);
     
                 const newGameNameTextbox = document.createElement("input");
@@ -208,7 +209,7 @@ function GenerateLoadingScreen() {
                 newGameNameTextbox.setAttribute("type", "text");
                 newGameNameTextbox.setAttribute("autocomplete", "off");
                 newGameNameTextbox.setAttribute("maxlength", "12");
-                newGameNameTextbox.setAttribute("placeholder", "Your Name");
+                newGameNameTextbox.setAttribute("placeholder", GetTranslation("Nickname"));
                 newGameNameTextbox.classList.add("loadingScreenInput");
                 newGameNameTextbox.onfocus = function() { newGameDiv.classList.remove("rotate45"); };
                 newGameNameTextbox.onblur  = function() { newGameDiv.classList.add("rotate45"); };
@@ -216,7 +217,7 @@ function GenerateLoadingScreen() {
     
                 const newGameButton = document.createElement("button");
                 newGameButton.classList.add("loadingScreenButton");
-                newGameButton.textContent = "Start!";
+                newGameButton.textContent = GetTranslation("Start!");
                 newGameButton.onfocus = function() { newGameDiv.classList.remove("rotate45"); };
                 newGameButton.onblur  = function() { newGameDiv.classList.add("rotate45"); };
                 newGameButton.onclick = function() { NewGame(); };
@@ -244,7 +245,7 @@ function GenerateLoadingScreen() {
 
             const joinGameTextDiv = document.createElement("div");
             joinGameTextDiv.classList.add("loadingScreenText");
-            joinGameTextDiv.innerHTML = "Join Game";
+            joinGameTextDiv.innerHTML = GetTranslation("Join Game");
             joinGameDiv.appendChild(joinGameTextDiv);
 
             const joinGameNameTextbox = document.createElement("input");
@@ -252,7 +253,7 @@ function GenerateLoadingScreen() {
             joinGameNameTextbox.setAttribute("type", "text");
             joinGameNameTextbox.setAttribute("maxlength", "12");
             joinGameNameTextbox.setAttribute("autocomplete", "off");
-            joinGameNameTextbox.setAttribute("placeholder", "Your Name");
+            joinGameNameTextbox.setAttribute("placeholder", GetTranslation("Nickname"));
             joinGameNameTextbox.classList.add("loadingScreenInput");
             joinGameNameTextbox.onfocus = function() { joinGameDiv.classList.remove("rotateM85"); };
             joinGameNameTextbox.onblur  = function()  { joinGameDiv.classList.add("rotateM85"); };
@@ -262,7 +263,7 @@ function GenerateLoadingScreen() {
             joinGameRoomcodeTextbox.id = "joinGameRoomcodeTextbox";
             joinGameRoomcodeTextbox.setAttribute("type", "text");
             joinGameRoomcodeTextbox.setAttribute("autocomplete", "off");
-            joinGameRoomcodeTextbox.setAttribute("placeholder", "Room Code");
+            joinGameRoomcodeTextbox.setAttribute("placeholder", GetTranslation("Room Code"));
             if (roomData.roomCode != null ) { joinGameRoomcodeTextbox.value = roomData.roomCode; }
             joinGameRoomcodeTextbox.classList.add("loadingScreenInput");
             joinGameRoomcodeTextbox.onfocus = function() { joinGameDiv.classList.remove("rotateM85"); };
@@ -271,7 +272,7 @@ function GenerateLoadingScreen() {
 
             const joinGameButton = document.createElement("button");
             joinGameButton.classList.add("loadingScreenButton");
-            joinGameButton.textContent = "Join!";
+            joinGameButton.textContent = GetTranslation("Join!");
             joinGameButton.onfocus = function() { joinGameDiv.classList.remove("rotateM85"); };
             joinGameButton.onblur  = function() { joinGameDiv.classList.add("rotateM85"); };
             joinGameButton.onclick = function() { JoinGame(); };
@@ -284,6 +285,42 @@ function GenerateLoadingScreen() {
         mainWrapper.appendChild(joinGameCircleDiv);
     }, 1200*sessionData.animationSpeed);
 
+    const footerDiv = document.createElement("div");
+    footerDiv.id = "footerDiv";
+    footerDiv.classList.add("footerDiv");
+    footerDiv.style.transform = "translateY(calc(var(--footer-height) * var(--truevh)))";
+    mainWrapper.appendChild(footerDiv);
+
+    const footerElements = [
+        {name: "Score",    opacity: 0, icon: "⭐",                text: "0"},
+        {name: "Room",     opacity: 0, icon: "🚪",                text: "",                       onclick: ToggleLeaveRoom},
+        {name: "Player",   opacity: 0, icon: "👤",                text: ""},
+        {name: "Qr",       opacity: 0, icon: "▞",                 text: GetTranslation("Invite"), onclick: ShowQR},
+        {name: "Language", opacity: 1, icon: languageObject.flag, text: languageText,             onclick: ToggleLanguageSelector}
+    ];
+    
+    footerElements.forEach(element => {
+        const footerWrapper = document.createElement("div");
+        footerWrapper.id = `footer${element.name}Wrapper`;
+        footerWrapper.classList.add("footerWrapper");
+        if(element.onclick) { footerWrapper.onclick = element.onclick; }
+        footerWrapper.style.opacity = element.opacity;
+        const footerIcon = document.createElement("span");
+        footerIcon.innerHTML = element.icon;
+        footerIcon.id = `footer${element.name}Icon`;
+        footerIcon.classList.add("footerIcon");
+        footerWrapper.append(footerIcon);
+        const footerText = document.createElement("span");
+        footerText.id = `footer${element.name}Text`;
+        footerText.innerHTML = element.text;
+        footerWrapper.append(footerText);
+        footerDiv.append(footerWrapper);
+    });
+
+    setTimeout(function() {
+        footerDiv.style.transform = "translateY(0)";
+    }, 1500*sessionData.animationSpeed);
+   
     setTimeout(function() {sessionData.animating = false;}, 1500);
 }
 
@@ -341,7 +378,7 @@ function GeneratelobbyScreen() {
 
     const lobbyScreenHeader = document.createElement("div");
     lobbyScreenHeader.classList.add("lobbyScreenHeader", "lobbyScreenHeaderShrunk");
-    lobbyScreenHeader.innerHTML = "Waiting for players<br/>Room code: " + roomData.roomCode;
+    lobbyScreenHeader.innerHTML = GetTranslation("Waiting for players<br/>Room code: ") + roomData.roomCode;
     lobbyScreenWrapper.appendChild(lobbyScreenHeader);
 
     const badgeWrapper = document.createElement("div");
@@ -376,7 +413,7 @@ function GeneratelobbyScreen() {
 
     const lobbyScreenStartButton = document.createElement("button");
     lobbyScreenStartButton.classList.add("lobbyScreenStartButton");
-    lobbyScreenStartButton.textContent = "Start Game!";
+    lobbyScreenStartButton.textContent = GetTranslation("Start Game!");
     lobbyScreenStartButton.onclick = function() { StartGame(); };
     lobbyScreenFooter.appendChild(lobbyScreenStartButton);
     const lobbyScreenStartButtonGlow = document.createElement("div");
@@ -385,7 +422,7 @@ function GeneratelobbyScreen() {
 
     const lobbyScreenLeaveButton = document.createElement("button");
     lobbyScreenLeaveButton.classList.add("lobbyScreenLeaveButton");
-    lobbyScreenLeaveButton.textContent = "Leave";
+    lobbyScreenLeaveButton.textContent = GetTranslation("Leave");
     lobbyScreenLeaveButton.onclick = function() { LeaveGame(); };
     lobbyScreenFooter.appendChild(lobbyScreenLeaveButton);
 
@@ -575,7 +612,7 @@ function PopulateActionScreen(normalSpeed) {
             return;
         }
 
-        actionScreenHeader.innerHTML = GetTranslation(sessionData.language, "Do this:");
+        actionScreenHeader.innerHTML = GetTranslation("Do this:");
 
         const actionScreenCardDiv = document.createElement("div");
         actionScreenCardDiv.id = "actionScreenCardDiv";
@@ -594,6 +631,7 @@ function PopulateActionScreen(normalSpeed) {
         cardTextDiv.innerHTML = cardTextTranslated;
         cardTextDiv.classList.add("cardTextDiv");
         actionScreenCardDiv.appendChild(cardTextDiv);
+        setTimeout(() => { ShrinkText(cardTextDiv); }, 550);
         const cardFooterDiv = document.createElement("div");
         cardFooterDiv.innerHTML = "Simply Anything";
         cardFooterDiv.classList.add("cardFooterDiv");
@@ -645,7 +683,7 @@ function PopulateActionScreen(normalSpeed) {
         const actionScreenHeaderTopLine = document.createElement("div");
         actionScreenHeaderTopLine.classList.add("actionScreenHeaderTopLine");
 
-        actionScreenHeaderTopLine.innerHTML = "Watch:";
+        actionScreenHeaderTopLine.innerHTML = GetTranslation("Watch:");
         actionScreenHeaderTopLine.style.whiteSpace = "nowrap";
         actionScreenHeaderTopLine.appendChild(actorBadge);
         actionScreenHeader.appendChild(actionScreenHeaderTopLine);
@@ -660,7 +698,7 @@ function PopulateActionScreen(normalSpeed) {
 
         const questionCardsHeaderDiv = document.createElement("div");
         questionCardsHeaderDiv.classList.add("questionCardsHeaderDiv");
-        questionCardsHeaderDiv.innerHTML = "What did they do?";
+        questionCardsHeaderDiv.innerHTML = GetTranslation("What did they do?");
         actionScreenHeader.appendChild(questionCardsHeaderDiv);
 
         if(!actionScreenContent.querySelector(".questionCard")) {
@@ -722,7 +760,7 @@ function ToggleLeaveRoom(event) {
 
     const leaveRoomText = document.createElement("div");
     leaveRoomText.classList.add("leaveRoomText");
-    leaveRoomText.innerHTML = "Leave Room";
+    leaveRoomText.innerHTML = GetTranslation("Leave Room");
     leaveRoomText.onclick = LeaveGame;
     leaveRoomWrapper.append(leaveRoomText);
 
@@ -741,13 +779,12 @@ function ToggleLanguageSelector(event) {
         RemoveLanguageSelector();
         return;
     }
-    const footerLanguageLocation = document.getElementById("footerLanguageWrapper").getBoundingClientRect();
     const mainWrapper = document.getElementById("MainWrapper");
 
     const languageSelectorWrapper = document.createElement("div");
     languageSelectorWrapper.classList.add("languageSelectorWrapper");
-    languageSelectorWrapper.style.left   = footerLanguageLocation.left + "px";
-    languageSelectorWrapper.style.width  = footerLanguageLocation.width + "px";
+    languageSelectorWrapper.style.right  = 0;
+    languageSelectorWrapper.style.width  = window.innerWidth / 5 + "px";
     languageSelectorWrapper.style.bottom = "calc(var(--footer-height) * var(--truevh))";
     languageSelectorWrapper.style.zIndex = "20";
     mainWrapper.append(languageSelectorWrapper);
@@ -798,11 +835,11 @@ function ToggleOverride(event) {
     overrideWrapper.style.width = menuWidth + "px";
     switch (roomData.roomGameState) {
         case 1:
-            overrideWrapper.innerHTML = "Reveal";
+            overrideWrapper.innerHTML = GetTranslation("Reveal");
             overrideWrapper.onclick = RevealAnswer;
             break;
         case 2:
-            overrideWrapper.innerHTML = "Next";
+            overrideWrapper.innerHTML = GetTranslation("Next");
             overrideWrapper.onclick = ProgressQuestions;
             break;
     }    
@@ -870,8 +907,8 @@ function RevealActorResults(normalSpeed) {
 
 
     setTimeout(() => {
-        actionScreenHeader.innerHTML = "Everyone's guess...";
-        actionScreenHeader.style.fontSize = "";
+        actionScreenHeader.innerHTML = GetTranslation("Everyone's guess...");
+        actionScreenHeader.style.fontSize = "unset";
 
         actionScreenFooter.innerHTML = "";
         actionScreenFooter.style.opacity = "1";
@@ -901,25 +938,25 @@ function RevealActorResults(normalSpeed) {
         document.getElementById("footerScoreText").innerHTML = myPlayerData.playerScore;
 
         // No one guessed
-        if (guessedSomething.length == 0) { footerText.innerHTML = "No one had made a guess. 😞"; }
+        if (guessedSomething.length == 0) { footerText.innerHTML = GetTranslation("No one had made a guess. 😞"); }
 
         // One person guessed
         else if (guessedSomething.length == 1) {
             const playerName = guessedSomething[0].playerName;
             if(guessedCorrectly.length == 1) {
-                footerText.innerHTML = playerName + " guessed right! 😄";
+                footerText.innerHTML = playerName + GetTranslation(" guessed right! 😄");
                 ConfettiBlast(1.5);
             } else {
-                footerText.innerHTML = playerName + " guessed wrong! 😞";
+                footerText.innerHTML = playerName + GetTranslation(" guessed wrong! 😞");
             }
         }
 
         // Multiple people guessed
         else {
             if(guessedCorrectly.length == 1) {
-                footerText.innerHTML = "Only " + guessedCorrectly[0].playerName + " was right! 😲";
+                footerText.innerHTML = GetTranslation("Only ") + guessedCorrectly[0].playerName + GetTranslation(" was right! 😲");
             } else if (guessedCorrectly.length == guessedSomething.length) {
-                footerText.innerHTML = "Everyone's right! 🥳";
+                footerText.innerHTML = GetTranslation("Everyone's right! 🥳");
                 ConfettiBlast(2);
             } else {
                 //footerTextDiv.innerHTML = guessedCorrectly.length + " of " + guessedSomething.length + " (" + Math.round((guessedCorrectly.length / guessedSomething.length)*100) + "%) right! ";
@@ -939,7 +976,7 @@ function RevealActorResults(normalSpeed) {
     setTimeout(() => {
         const progressQuestionButton = document.createElement("button");
         progressQuestionButton.classList.add("lobbyScreenStartButton");
-        progressQuestionButton.textContent = "Next >>";
+        progressQuestionButton.textContent = GetTranslation("Next >>");
         progressQuestionButton.onclick = ProgressQuestions;
         actionScreenFooter.appendChild(progressQuestionButton);
     },  11000);
@@ -965,20 +1002,20 @@ function RevealResults() {
     const actionScreenCover = document.createElement("div");
     actionScreenCover.classList.add("actionScreenCover");
     actionScreenCover.style.opacity = "0";
-    actionScreenCover.innerHTML = "Time's up!";
+    actionScreenCover.innerHTML = GetTranslation("Time's up!");
     actionScreenWrapper.appendChild(actionScreenCover);
 
     // This is the animation to reveal the answer dramatically!
     setTimeout(function() { actionScreenCover.style.opacity  = "1";          }, 50);
     setTimeout(function() { RemoveOverride();                                }, 50);
     setTimeout(function() { actionScreenCover.style.fontSize = "0";          }, 2000);
-    setTimeout(function() { actionScreenCover.style.fontSize = ""; actionScreenCover.innerHTML = "Everyone's<br/>answers..."; questionCardsHeaderDiv.innerHTML = "Everyone's answers..."; questionCardsHeaderDiv.style.fontSize = ""; }, 2500);
+    setTimeout(function() { actionScreenCover.style.fontSize = "2rem"; actionScreenCover.innerHTML = GetTranslation("Everyone's<br/>answers..."); questionCardsHeaderDiv.innerHTML = GetTranslation("Everyone's answers..."); questionCardsHeaderDiv.style.fontSize = "2rem"; }, 2500);
     setTimeout(function() { actionScreenCover.style.fontSize = "0";          }, 4500);
     setTimeout(function() { actionScreenCover.style.opacity  = "0";          }, 5000);
     setTimeout(function() { actionScreenCover.style.display  = "none";       }, 5500);
     setTimeout(function() { PopulateQuestionCardEmoji();                     }, 6000); // Max 1.5s
     setTimeout(function() { questionCardsHeaderDiv.style.fontSize = "0";     }, 7500);
-    setTimeout(function() { questionCardsHeaderDiv.style.fontSize = ""; questionCardsHeaderDiv.innerHTML = "The answer is..."; }, 8000);
+    setTimeout(function() { questionCardsHeaderDiv.style.fontSize = "unset"; questionCardsHeaderDiv.innerHTML = GetTranslation("The answer is..."); }, 8000);
     setTimeout(function() { BlurQuestionCards(roomData.roomCorrectAnswer);   }, 10000);
     setTimeout(function() { correctQuestionCard.classList.add("bigGlow");    }, 10000);
     setTimeout(function() { if(playerCorrect) { ConfettiBlast(2); }          }, 10000);
@@ -999,7 +1036,7 @@ function RerevealResults() {
     const questionCardsHeaderDiv = document.querySelector(".questionCardsHeaderDiv");
     const playerCorrect = (roomData.roomCorrectAnswer == myPlayerData.playerChoice);
 
-    questionCardsHeaderDiv.innerHTML = "The answer is...";
+    questionCardsHeaderDiv.innerHTML = GetTranslation("The answer is...");
     PopulateQuestionCardEmoji();
     BlurQuestionCards(roomData.roomCorrectAnswer);
     correctQuestionCard.classList.add("smallGlow");
@@ -1040,16 +1077,16 @@ function UpdateProgressBar() {
     const progressBarPercent = Math.max(3, guessedPlayersCount / (Math.max(1, activeGuesserList.length)) * 100);
     document.querySelector(".progressBarFiller").style.width = progressBarPercent + "%";
     if(guessedPlayersCount == activeGuesserList.length && activeGuesserList.length > 0) {
-        document.querySelector(".actionScreenStatusText").innerHTML = "Everyone has guessed!";
-        document.getElementById("actionScreenRevealButton").textContent = "Reveal";
+        document.querySelector(".actionScreenStatusText").innerHTML = GetTranslation("Everyone has guessed!");
+        document.getElementById("actionScreenRevealButton").textContent = GetTranslation("Reveal");
         document.getElementById("actionScreenRevealButton").classList.remove("spinnerBackground");
     } else if (guessedPlayersCount < activeGuesserList.length) {
-        document.querySelector(".actionScreenStatusText").innerHTML = "Players are guessing...";
-        document.getElementById("actionScreenRevealButton").textContent = "Wait...";
+        document.querySelector(".actionScreenStatusText").innerHTML = GetTranslation("Players are guessing...");
+        document.getElementById("actionScreenRevealButton").textContent = GetTranslation("Wait...");
         document.getElementById("actionScreenRevealButton").classList.add("spinnerBackground");
     } else {
-        document.querySelector(".actionScreenStatusText").innerHTML = "No other players...";
-        document.getElementById("actionScreenRevealButton").textContent = "Wait...";
+        document.querySelector(".actionScreenStatusText").innerHTML = GetTranslation("No other players...");
+        document.getElementById("actionScreenRevealButton").textContent = GetTranslation("Wait...");
         document.getElementById("actionScreenRevealButton").classList.add("spinnerBackground");
     }
 }
@@ -1484,7 +1521,7 @@ function ShowConnected() {
 
     // The whole display is reset to showing an "Offline" message
     setTimeout(() => {
-        offlineHeader.innerHTML = "Game disconnected";
+        offlineHeader.innerHTML = GetTranslation("Game disconnected");
         offlineCover.style.display = "none";
         offlineHeader.classList.remove("reconnect");
         offlineActions.style.visibility = "";
@@ -1577,12 +1614,6 @@ function ShowQR() {
 
     qrDivWrapper.style.display = "";
     qrDivWrapper.style.opacity = "1";
-}
-
-function ShowLanguage() {
-    return;
-    const languageWrapper = document.getElementById("footerLanguageWrapper");
-    languageWrapper.style.height = `calc(100% + ${languages.length} * 3 * var(--truevh))`;
 }
 
 function getCookie(cname) {
@@ -1695,12 +1726,47 @@ function ShrinkText(container, textElement) {
 }
 //#endregion
 
+function GetTranslation(english, language = sessionData.language) {
+    const translations = [
+        {english: "Invite", japanese: "招待", korean: "초대"},
+        {english: "Do this:", japanese: "次の操作を行います:", korean: "다음을 수행하세요:"},
+        {english: "Watch:", japanese: "この人を見て：", korean: "이 사람을 보다"},
+        {english: "What did they do?", japanese: "何をしましたか？", korean: "그들은 무엇을 했습니까?"},
+        {english: "Game disconnected", japanese: "ゲームが切断されました", korean: "게임이 연결이 끊어졌습니다"},
+        {english: "Wait or", japanese: "待つか", korean: "기다리거나"},
+        {english: "Reload", japanese: "リロード", korean: "다시 불러오기"},
+        {english: "Scan to join!", japanese: "スキャンして参加！", korean: "스캔하여 참가하십시오!"},
+        {english: "New Game", japanese: "新しいゲーム", korean: "새 게임"},
+        {english: "Nickname", japanese: "ニックネーム", korean: "닉네임"},
+        {english: "Room Code", japanese: "部屋コード", korean: "방 코드"},
+        {english: "Start!", japanese: "スタート！", korean: "시작!"},
+        {english: "Join Game", japanese: "ゲームに参加", korean: "게임 참가"},
+        {english: "Join!", japanese: "参加！", korean: "참가!"},
+        {english: "Waiting for players<br/>Room code: ", japanese: "プレイヤーを待っています<br/>部屋コード：", korean: "플레이어를 기다리는 중<br/>방 코드："},
+        {english: "Start Game!", japanese: "ゲームを開始！", korean: "게임 시작!"},
+        {english: "Leave", japanese: "退出", korean: "떠나다"},
+        {english: "Leave Room", japanese: "部屋を出る", korean: "방 나가기"},
+        {english: "Reveal", japanese: "明らかにする", korean: "밝히다"},
+        {english: "Next", japanese: "次", korean: "다음"},
+        {english: "Everyone's guess...", japanese: "みんなの推測...", korean: "모두의 추측..."},
+        {english: "No one had made a guess. 😞", japanese: "誰も推測していませんでした。😞", korean: "아무도 추측하지 않았습니다. 😞"},
+        {english: " guessed right! 😄", japanese: "は正しく推測しました。😄", korean: "올바르게 추측했습니다. 😄"},
+        {english: " guessed wrong! 😞", japanese: "は間違って推測しました。😞", korean: "틀렸습니다. 😞"},
+        {english: "Only ", japanese: "", korean: ""},
+        {english: " was right! 😲", japanese: "だけが正しかった。😲", korean: "만 옳았습니다. 😲"},
+        {english: "Everyone's right! 🥳", japanese: "みんな正しいよ！🥳", korean: "모두들 옳아요! 🥳"},
+        {english: "Next >>", japanese: "次へ >>", korean: "다음 >>"},
+        {english: "Time's up!", japanese: "時間切れ！", korean: "시간 초과!"},
+        {english: "Everyone's<br/>answers...", japanese: "みんなの<br/>答え...", korean: "모두의<br/>답변..."},
+        {english: "Everyone's answers...", japanese: "みんなの答え...", korean: "모두의 답변..."},
+        {english: "The answer is...", japanese: "答えは...", korean: "답은..."},
+        {english: "Everyone has guessed!", japanese: "みんなが推測しました！", korean: "모두가 추측했습니다!"},
+        {english: "Players are guessing...", japanese: "プレイヤーが推測しています...", korean: "플레이어가 추측 중..."},
+        {english: "Wait...", japanese: "待って...", korean: "기다려..."},
+        {english: "No other players...", japanese: "他のプレイヤーはいません...", korean: "다른 플레이어 없음..."},
+    ];
 
-const translations = [
-    {english: "Do this:", japanese: "これをやる", korean: "이것을 하다"},
-];
-
-function GetTranslation(language, english) {
     const translationObject = translations.find(t => t.english === english);
-    return (translationObject && translationObject[language]) || english;
+    const translatedText = translationObject && translationObject[language];
+    return translatedText ?? english;
 }
