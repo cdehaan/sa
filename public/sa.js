@@ -1463,7 +1463,7 @@ function ReadMsg(msg, personal) {
 
 //#region Socket Functions
 function ConnectSocket() {
-    socket = io();
+    socket = io("https://api.simplyanything.ca");
     socket.on('connect',              function()    { SocketConnected();        });
     socket.on('disconnect',           function()    { SocketDisconnected();     });
 
