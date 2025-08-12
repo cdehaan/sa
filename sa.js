@@ -1110,7 +1110,7 @@ function GenerateActionScreenQuestionCard(question) {
     questionCard.setAttribute("questionindex", questionIndex);
 
     const roomCard = roomData.roomCard;
-    const questionTranslationObject = roomCard.questionTranslations.find(questionTranslation => questionTranslation.source_key === question.question_key);
+    const questionTranslationObject = roomCard?.questionTranslations?.find(questionTranslation => questionTranslation.source_key === question.question_key);
 
     const cardTextEnglish = StringTo3rdPerson(roomCard.card_command) + " " + StringTo3rdPerson(question.question_text);
     const cardTextTranslated = sessionData.language === "english" ? cardTextEnglish : !questionTranslationObject ? cardTextEnglish : (roomCard.cardTranslation.translation_third || "") + " " + questionTranslationObject.translation_third;
