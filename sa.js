@@ -624,7 +624,7 @@ function PopulateActionScreen(normalSpeed) {
         const roomCard = roomData.roomCard;
         console.log(roomCard);
         const questionObject = roomCard.questions.find(question => question.question_index == roomData.roomCorrectAnswer);
-        const questionTranslationObject = roomCard.questionTranslations.find(questionTranslation => questionTranslation.source_key === questionObject.question_key);
+        const questionTranslationObject = roomCard?.questionTranslations?.find(questionTranslation => questionTranslation.source_key === questionObject.question_key);
 
         const cardTextEnglish = StringTo2ndPerson(roomCard.card_command) + " " + StringTo2ndPerson(questionObject.question_text);
         const cardTextTranslated = sessionData.language === "english" ? cardTextEnglish : !questionTranslationObject ? cardTextEnglish : (roomCard.cardTranslation.translation_second || "") + " " + questionTranslationObject.translation_second;
